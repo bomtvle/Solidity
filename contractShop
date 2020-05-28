@@ -30,5 +30,28 @@ contract shop{
         require(isRegister[msg.sender] == false);
         isRegister[msg.sender] = true;
     }
+    function setProduct(uint _ID, string memory _name, uint _price)
+    onlyOwner public{
+        product[ ID] = ProductInfo({
+            name : name,
+            price : price * 1 ether,
+            time : now
+        });
+    }
+    function buyProduct(uint ID, uint amount) payable isMember public{
+        require(product[ ID].price * amount == msg.value);
+        // owner.transfer(msg.value);
+        buyList[msg.sender] [ ID] =List({
+            productName : product [ ID].name,
+            amount : buyList[msg.sender] [_ID].amount += _amount,
+            buyTime: now
+        });
+    }
+    function getHistory(uint ID) view public
+    returns(string memory, uint){
+        return
+            buyList[msg.sender][ ID].productName,
+            buyList[msg.sender][ ID].amount;
+    }
     
 }
