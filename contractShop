@@ -42,9 +42,9 @@ contract shop{
         require(product[ ID].price * amount == msg.value);
         // owner.transfer(msg.value);
         owner.transfer(address(this).balance);
-        buyList[msg.sender] [ ID] =List({
-            productName : product [ ID].name,
-            amount : buyList[msg.sender] [_ID].amount += _amount,
+        buyList[msg.sender][ ID] =List({
+            productName : product[ ID].name,
+            amount : buyList[msg.sender][_ID].amount += _amount,
             buyTime: now
         });
     }
