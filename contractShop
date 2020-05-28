@@ -3,7 +3,7 @@ contract shop{
     address payable owner;
     struct ProductInfo{
         string name;
-        uint name;
+        uint price;
         uint time;
     }
     struct List{
@@ -41,6 +41,7 @@ contract shop{
     function buyProduct(uint ID, uint amount) payable isMember public{
         require(product[ ID].price * amount == msg.value);
         // owner.transfer(msg.value);
+        owner.transfer(address(this).balance);
         buyList[msg.sender] [ ID] =List({
             productName : product [ ID].name,
             amount : buyList[msg.sender] [_ID].amount += _amount,
@@ -49,9 +50,9 @@ contract shop{
     }
     function getHistory(uint ID) view public
     returns(string memory, uint){
-        return
+        return (
             buyList[msg.sender][ ID].productName,
-            buyList[msg.sender][ ID].amount;
+            buyList[msg.sender][_ID].amount);
     }
     
 }
