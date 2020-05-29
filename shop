@@ -1,0 +1,87 @@
+pragma solidity ^0.5.0;
+
+contract shop{
+    
+    address payable owner;
+    
+    //紀錄上架上品資訊
+    struct ProductInfo{
+        
+        string name;
+        uint price;
+        uint time;
+    }
+    
+    //紀錄購買商品數量紀錄
+    struct List{
+        
+        string productName;
+        uint amount;
+        uint buyTime;
+    }
+    
+    //是否為擁有者
+    modifier onlyOwner{
+        
+        require(msg.sender == owner, "You are not owner");
+        _;
+    }
+    
+    //是否已經註冊過
+    modifier isMember{
+        
+        require(isRegister[msg.sender] == true);
+        _;
+    }
+    
+    mapping (address => bool) public isRegister;
+    mapping (address => mapping (uint => List)) public buyList;
+    mapping (uint => ProductInfo) public product;
+    
+    
+    //初始化店家為擁有者
+    constructor() public{
+        owner = msg.sender;
+    }
+    
+    //註冊會員
+    function register() public{
+        
+        require(isRegister[msg.sender] == false);
+        isRegister[msg.sender] = true;
+    }
+    
+    //上架商品
+    function setProduct(uint _ID, string memory _name, uint _price) onlyOwner public{
+        
+        product[_ID] = ProductInfo({
+            
+            name: _name,
+            price: _price *1 ether,
+            time: now
+        });
+    }
+    
+    //購買商品
+    function buyProduct(uint _ID, uint _amount) payable isMember public{
+        
+        require(msg.value == product[_ID].price * _amount);
+        
+        owner.transfer(address(this).balance);
+		
+        buyList[msg.sender][_ID] = List({
+            
+            productName: product[_ID].name,
+            amount: buyList[msg.sender][_ID].amount += _amount,
+            buyTime: now
+        });
+    }
+    
+    //查詢紀錄
+    function getHistory(uint _ID) view public returns(string memory, uint){
+        
+        return (
+            buyList[msg.sender][_ID].productName,
+            buyList[msg.sender][_ID].amount);
+    }
+}
